@@ -1,12 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+
+from webdriver_manager.chrome import ChromeDriverManager
+
 import time
-import undetected_chromedriver.v2 as uc
 
 # def requestURL():
 #     return input("Enter a musescore url: ")
@@ -30,22 +30,23 @@ chrome_options = Options()
 chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
 
 driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-#driver = uc.Chrome()
 driver.get("https://musescore.com/user/16006641/scores/4197961")
-#html = driver.find_element_by_tag_name('html')
+
 body = driver.find_element(By.TAG_NAME, "body")
 song_window = driver.find_element(By.ID, "jmuse-scroller-component")
 song_window.click()
-time.sleep(1)
-body.send_keys(Keys.PAGE_DOWN)
+time.sleep(0.5)
 
-# last_height = driver.execute_script("return document.body.scrollHeight")
-# while True:
-#     driver.execute_script("window.scrollBy(0,document.body.scrollHeight)")
-#     time.sleep(0.5)
-#     new_height = last_height = driver.execute_script("return document.body.scrollHeight")
-#     if new_height == last_height:
-#         break
-#     last_height = new_height
+last_height = driver.execute_script("return document.getElementById(\"jmuse-scroller-component\").scrollTop")
+while True:
+    
+    body.send_keys(Keys.PAGE_DOWN)
+    time.sleep(0.5)
+    new_height = driver.execute_script("return document.getElementById(\"jmuse-scroller-component\").scrollTop")
+    print(str(last_height) + ' | ' + str(new_height))
+    if new_height == last_height:
+        break
+    last_height = new_height
+    
 time.sleep(3)
 driver.quit()
