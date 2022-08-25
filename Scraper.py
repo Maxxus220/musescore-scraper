@@ -9,6 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
 from PIL import Image
+from PyPDF2 import PdfMerger
 
 import os
 import time
@@ -21,6 +22,7 @@ def requestURL():
 def requestSaveName():
     return input("Enter a name to save the song under: ")
 
+# detects if score is svg or png
 def detectScoreType(scoreUrl):
     if 'svg' in scoreUrl:
         return 'svg'
@@ -29,6 +31,7 @@ def detectScoreType(scoreUrl):
     else:
         return None
     
+# downloads png or svg then converts to pdf
 def downloadScore(src, saveName):
     scoreType = detectScoreType(src)
     
@@ -51,11 +54,29 @@ def downloadScore(src, saveName):
                 png = Image.open('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
                 png = png.convert('RGB')
                 png.save('./Music/' + saveName + '_' + str(score_num) + '.pdf')
+                png.close()
                 os.remove('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
             
         print(saveName + '_' + str(score_num) + '.pdf successfully downloaded')
     else:
         print('Problem encountered while trying to download ' + saveName + str(score_num))
+        
+# takes singular score pages and converts them to a single pdf under saveName + '.pdf'
+def mergePages(saveName, score_num):
+    merger = PdfMerger()
+    
+    # add pages
+    for i in range(0, score_num):
+        merger.append('./Music/' + saveName + '_' + str(i) + '.pdf')
+        
+    merger.write('./Music/' + saveName + '.pdf')
+    merger.close()
+    
+    # remove single pdfs
+    for i in range(0, score_num):
+        os.remove('./Music/' + saveName + '_' + str(i) + '.pdf')
+        
+    print('PDFs merged')
     
 
 url = requestURL()
@@ -100,6 +121,8 @@ while True:
     if new_height == last_height:
         break
     last_height = new_height
+    
+mergePages(saveName, score_num)
 
 input('Press ENTER to quit')
 driver.quit()
