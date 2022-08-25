@@ -34,7 +34,7 @@ def detectScoreType(scoreUrl):
         return None
     
 # downloads png or svg then converts to pdf
-def downloadScore(src, saveName):
+def downloadScore(src, saveName, score_num):
     scoreType = detectScoreType(src)
     
     # download file
@@ -99,10 +99,13 @@ def center(win):
     win.deiconify()
     
 # runs selenium, scrapes site for sheetmusic, and downloads sheetmusic as pdfs
-def runScraper(url, saveName):
+def runScraper(url, saveName, window):
     
     if url == "" or saveName == "":
         return
+    
+    # close tkinter window
+    window.destroy()
     
     # driver options
     WINDOW_SIZE = "1920,1080"
@@ -135,7 +138,7 @@ def runScraper(url, saveName):
         for score in scores:
             src = score.get_attribute('src')
             if 'score_' + str(score_num) in src:
-                downloadScore(src, saveName)
+                downloadScore(src, saveName, score_num)
                 score_num+=1
                 
         # check for end of scrolling
@@ -146,8 +149,8 @@ def runScraper(url, saveName):
         
     mergePages(saveName, score_num)
 
-    input('Press ENTER to quit')
     driver.quit()
+    input('Press ENTER to quit')
     
 window = tk.Tk()
 window.geometry("500x300")
@@ -166,12 +169,8 @@ saveName_label.place(x = 100, y = 90, width = 300)
 saveName_entry = tk.Entry()
 saveName_entry.place(x = 100, y = 110, width=300)
 
-submit_button = tk.Button(text="Download")
-submit_button.bind('<Button>', lambda event, url=url_entry.get(), saveName=saveName_entry.get(): self.runScraper(url, saveName))
+submit_button = tk.Button(text="Download", command = lambda : runScraper(url_entry.get(), saveName_entry.get(), window))
 submit_button.place(x=200, y = 240, width=100)
 
 window.mainloop()
-
-#url = requestURL()
-#saveName = requestSaveName()
 
