@@ -18,12 +18,6 @@ import shutil
 
 import tkinter as tk
 
-def requestURL():
-    return input("Enter a musescore url: ")
-
-def requestSaveName():
-    return input("Enter a name to save the song under: ")
-
 # detects if score is svg or png
 def detectScoreType(scoreUrl):
     if 'svg' in scoreUrl:
