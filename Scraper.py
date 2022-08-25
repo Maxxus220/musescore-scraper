@@ -167,8 +167,10 @@ saveName_entry = tk.Entry()
 saveName_entry.place(x = 100, y = 110, width=300)
 
 submit_button = tk.Button(text="Download")
-submit_button.bind('<Button>', runScraper, url=url_entry.get(), saveName=saveName_entry.get())
+submit_button.bind('<Button>', lambda event, url=url_entry.get(), saveName=saveName_entry.get(): self.runScraper(url, saveName))
 submit_button.place(x=200, y = 240, width=100)
+
+window.mainloop()
 
 #url = requestURL()
 #saveName = requestSaveName()
