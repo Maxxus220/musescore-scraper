@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 
 from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPM
+from reportlab.graphics import renderPDF
 
 import os
 import time
@@ -38,10 +38,10 @@ def downloadScore(src, saveName):
             f.close()
             if scoreType == 'svg':
                 svg = svg2rlg('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
-                renderPM.drawToFile(svg, './Music/' + saveName + '_' + str(score_num) + '.png')
+                renderPDF.drawToFile(svg, './Music/' + saveName + '_' + str(score_num) + '.pdf')
                 os.remove('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
             
-        print(saveName + '_' + str(score_num) + '.png successfully downloaded')
+        print(saveName + '_' + str(score_num) + '.pdf successfully downloaded')
     else:
         print('Problem encountered while trying to download ' + saveName + str(score_num))
     
