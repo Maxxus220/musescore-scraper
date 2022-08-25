@@ -8,6 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
+from PIL import Image
 
 import os
 import time
@@ -30,15 +31,26 @@ def detectScoreType(scoreUrl):
     
 def downloadScore(src, saveName):
     scoreType = detectScoreType(src)
+    
+    # download file
     r = requests.get(src, stream=True)
     if r.status_code == 200 or scoreType == None:
         r.raw.decode_content = True
         with open('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
             f.close()
+            
+            # svg to pdf
             if scoreType == 'svg':
                 svg = svg2rlg('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
                 renderPDF.drawToFile(svg, './Music/' + saveName + '_' + str(score_num) + '.pdf')
+                os.remove('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
+            
+            # png to pdf
+            elif scoreType == 'png':
+                png = Image.open('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
+                png = png.convert('RGB')
+                png.save('./Music/' + saveName + '_' + str(score_num) + '.pdf')
                 os.remove('./Music/' + saveName + '_' + str(score_num) + '.' + scoreType)
             
         print(saveName + '_' + str(score_num) + '.pdf successfully downloaded')
