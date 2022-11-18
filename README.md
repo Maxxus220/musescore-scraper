@@ -3,7 +3,7 @@ Musescore Sheetmusic Scraper
 
 Summary
 --------
-A program that querys musescore pages pulling all sheet music on the page as svgs or pngs then converts the images to pdfs and merges them. The program uses selenium to avoid anti-scraping measures on the page.
+A program that querys musescore pages pulling all sheet music on the page as svgs or pngs then converts the images to pdfs and merges them. The program uses selenium to scrape the page.
 
 Requirements
 -------------
